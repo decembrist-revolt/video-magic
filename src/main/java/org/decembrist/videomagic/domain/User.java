@@ -6,13 +6,23 @@ import java.util.Set;
 @Entity
 @Table(name = "user")
 public class User {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(unique = true)
 	private String username;
 
 	private String password;
+
+	public User() {
+	}
+
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	@Transient
 	private String passwordConfirm;
