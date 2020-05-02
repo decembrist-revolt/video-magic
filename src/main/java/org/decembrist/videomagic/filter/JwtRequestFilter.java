@@ -13,12 +13,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
+
+	public static String ACCESS_TOKEN = "access_token";
 
 	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
@@ -31,14 +34,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request,
 									HttpServletResponse response,
 									FilterChain chain) throws ServletException, IOException {
-		final String requestTokenHeader = request.getHeader("Authorization");
+		final Cookie[] cookies = request.getCookies();
+		final var accessToken = getAccessToken(cookies);
 		String username = null;
 		String jwtToken = null;
 		// JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
-		if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-			jwtToken = requestTokenHeader.substring(7);
+		if (accessToken != null) {
 			try {
-				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
+				username = jwtTokenUtil.getUsernameFromToken(accessToken);
 			} catch (IllegalArgumentException e) {
 				System.out.println("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
@@ -62,6 +65,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			}
 		}
 		chain.doFilter(request, response);
+	}
+
+	private String getAccessToken(Cookie[] cookies) {
+		if (cookies == null) {
+			return null;
+		}
+		for (Cookie cookie : cookies) {
+			if (cookie.getName().equals(ACCESS_TOKEN)) {
+				return cookie.getValue();
+			}
+		}
+		return null;
 	}
 
 }
