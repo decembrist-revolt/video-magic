@@ -1,6 +1,7 @@
 package org.decembrist.videomagic.service;
 
 import org.decembrist.videomagic.domain.User;
+import org.decembrist.videomagic.dto.UserDto;
 import org.decembrist.videomagic.repository.UserRepository;
 import org.decembrist.videomagic.service.exception.UserException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,16 @@ public class UserService {
 		}
 		final User user = new User(username, encoder.encode(password));
 		userRepository.save(user);
+	}
+
+	@Transactional
+	public UserDto getUserByName(String username) {
+		final var user = userRepository.findByUsername(username);
+		UserDto userDto = null;
+		if (user.isPresent()) {
+			userDto = new UserDto(user.get().getId(), user.get().getUsername());
+		}
+		return userDto;
 	}
 
 }

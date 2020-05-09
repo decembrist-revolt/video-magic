@@ -30,14 +30,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	private TokenUtil jwtTokenUtil;
 
 	@Override
-
 	protected void doFilterInternal(HttpServletRequest request,
 									HttpServletResponse response,
 									FilterChain chain) throws ServletException, IOException {
 		final Cookie[] cookies = request.getCookies();
 		final var accessToken = getAccessToken(cookies);
 		String username = null;
-		String jwtToken = null;
 		// JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
 		if (accessToken != null) {
 			try {
@@ -54,7 +52,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 		if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 			UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 			// if token is valid configure Spring Security to manually set authentication
-			if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
+			//TODO: Optimizirovatb
+			if (jwtTokenUtil.validateToken(accessToken, userDetails)) {
 				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

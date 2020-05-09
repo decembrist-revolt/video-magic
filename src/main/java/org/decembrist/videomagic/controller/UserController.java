@@ -2,19 +2,18 @@ package org.decembrist.videomagic.controller;
 
 import org.decembrist.videomagic.dto.RegisterResponseData;
 import org.decembrist.videomagic.dto.UserAuthData;
+import org.decembrist.videomagic.dto.UserDto;
 import org.decembrist.videomagic.service.UserService;
 import org.decembrist.videomagic.service.exception.UserException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MimeType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.awt.datatransfer.MimeTypeParseException;
 
 @RestController
 @RequestMapping("/user")
@@ -26,9 +25,17 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/hello")
-	public String hello() {
-		return "hello";
+	@GetMapping("/whoami")
+	public UserDto whoAmI() {
+		final var authentication = SecurityContextHolder.getContext().getAuthentication();
+		final var principal = authentication.getPrincipal();
+		final String username;
+		if (principal instanceof UserDetails) {
+			username = ((UserDetails)principal).getUsername();
+		} else {
+			username = principal.toString();
+		}
+		return userService.getUserByName(username);
 	}
 
 	@PostMapping("/login")

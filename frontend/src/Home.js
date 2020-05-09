@@ -1,5 +1,8 @@
 import {Component} from "react";
 import React from 'react';
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 export default class Home extends Component {
 
@@ -9,10 +12,30 @@ export default class Home extends Component {
 
 	render() {
 		return (
-			<div>
-				<p>Hello Jopa</p>
-				<a href="/register">Registration</a>
-			</div>
+			<Container>
+				<Row>
+					<Col>
+						<p>Home</p>
+					</Col>
+				</Row>
+				{this.props.isLoggedIn ? null : (
+					<Row>
+						<Col>
+							<a href="/register">Registration</a>
+						</Col>
+					</Row>
+				)}
+				<Row>
+					<Col>
+						<a href="/login">Login</a>
+					</Col>
+				</Row>
+				<Row>
+					<Col>
+						<p>Hello </p>
+					</Col>
+				</Row>
+			</Container>
 		);
 	}
 }

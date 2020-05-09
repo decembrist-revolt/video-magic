@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-export default class Registration extends Component {
+export default class Login extends Component {
 
 	constructor(props) {
 		super(props);
@@ -33,10 +33,12 @@ export default class Registration extends Component {
 			headers: {
 				'Content-Type': 'application/json'
 			}
-		}).then(response => response.json()
-		).then(json => this.setState({
-			message: json.message
-		}));
+		}).then(response => {
+			if (response.status === 200) {
+				localStorage.setItem("username", this.state.username);
+				this.props.history.push('/');
+			}
+		});
 		event.preventDefault();
 	}
 
