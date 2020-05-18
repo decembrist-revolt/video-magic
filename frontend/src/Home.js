@@ -18,18 +18,6 @@ export default class Home extends Component {
 						<p>Home</p>
 					</Col>
 				</Row>
-				{this.props.isLoggedIn ? null : (
-					<Row>
-						<Col>
-							<a href="/register">Registration</a>
-						</Col>
-					</Row>
-				)}
-				<Row>
-					<Col>
-						<a href="/login">Login</a>
-					</Col>
-				</Row>
 				<Row>
 					<Col>
 						<p>Hello </p>

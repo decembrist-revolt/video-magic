@@ -22,7 +22,7 @@ export default class Login extends Component {
 	}
 
 	handleRegisterClick(event) {
-		console.log('Try to register', this.state.username, this.state.password);
+		console.log('Try to register', this.state.username, this.state.password)
 		const body = {
 			username: this.state.username,
 			password: this.state.password
@@ -35,8 +35,18 @@ export default class Login extends Component {
 			}
 		}).then(response => {
 			if (response.status === 200) {
-				localStorage.setItem("username", this.state.username);
+				localStorage.setItem("username", this.state.username)
+				console.log("LOGGED IN!")
 				this.props.history.push('/');
+				this.props.onLoggedIn()
+			} else if (response.status === 401) {
+				this.setState({
+					message: "Wrong credentials"
+				})
+			} else {
+				this.setState({
+					message: "Something went wrong!"
+				})
 			}
 		});
 		event.preventDefault();
@@ -45,6 +55,7 @@ export default class Login extends Component {
 	render() {
 		return (
 			<Form>
+				<Form.Text className="text-muted">LOGIN</Form.Text>
 				<Form.Text className="text-muted">
 					{this.state.message ? this.state.message : ''}
 				</Form.Text>

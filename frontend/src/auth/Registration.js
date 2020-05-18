@@ -44,6 +44,7 @@ export default class Registration extends Component {
 	render() {
 		return (
 			<Form>
+				<Form.Text className="text-muted">REGISTRATION</Form.Text>
 				<Form.Text className="text-muted">
 					{this.state.message ? this.state.message : ''}
 				</Form.Text>

@@ -5,6 +5,7 @@ import org.decembrist.videomagic.dto.AuthResultData;
 import org.decembrist.videomagic.dto.JwtBody;
 import org.decembrist.videomagic.service.JwtUserDetailsService;
 
+import org.decembrist.videomagic.utils.HttpUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -18,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
-import static org.decembrist.videomagic.filter.JwtRequestFilter.ACCESS_TOKEN;
 
 @RestController
 @CrossOrigin
@@ -43,8 +42,9 @@ public class AuthenticationController {
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 		final String token = tokenUtil.generateToken(userDetails);
-		final var accessToken = new Cookie(ACCESS_TOKEN, token);
-		response.addCookie(accessToken);
+		final var accessToken = new Cookie(HttpUtils.ACCESS_TOKEN_COOKIE_KEY, token);
+        accessToken.setMaxAge(7 * 24 * 60 * 60);
+        response.addCookie(accessToken);
 		return new AuthResultData();
 	}
 

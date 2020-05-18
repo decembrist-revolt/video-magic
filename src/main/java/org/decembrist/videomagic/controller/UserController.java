@@ -5,6 +5,7 @@ import org.decembrist.videomagic.dto.UserAuthData;
 import org.decembrist.videomagic.dto.UserDto;
 import org.decembrist.videomagic.service.UserService;
 import org.decembrist.videomagic.service.exception.UserException;
+import org.decembrist.videomagic.utils.HttpUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/user")
@@ -38,9 +41,9 @@ public class UserController {
 		return userService.getUserByName(username);
 	}
 
-	@PostMapping("/login")
-	public String login() {
-		return "login";
+	@PostMapping("/logout")
+	public void logout(HttpServletResponse response) {
+        HttpUtils.removeAccessToken(response);
 	}
 
 	@PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
